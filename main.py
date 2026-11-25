@@ -1,4 +1,12 @@
+"""Write the competition entry line to entry.txt in the output directory.
+
+Standard library only. The output directory is taken from the
+MAKEFUN_OUTPUT_DIR environment variable when set and non-empty, otherwise
+it defaults to the literal directory /output.
+"""
+
 import os
+import sys
 from pathlib import Path
 
 TEXT = (
@@ -16,7 +24,10 @@ def output_dir() -> str:
 
 def main() -> None:
     directory = output_dir()
-    Path(directory).mkdir(parents=True, exist_ok=True)
+    try:
+        Path(directory).mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        sys.exit(f"could not create output directory {directory!r}: {exc}")
     Path(directory, "entry.txt").write_text(TEXT, encoding="utf-8")
 
 
